@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Heart Disease Prediction</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: url("https://thehealthcaretechnologyreport.com/wp-content/uploads/2025/09/Laza-Medical-Debuts-AI-Heart-Model.png") no-repeat center center/cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Dark overlay */
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: -1;
+    }
+
+    .container {
+        width: 420px;
+        padding: 25px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        color: #fff;
+        animation: fadeIn 1.2s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    label {
+        font-size: 14px;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 4px;
+        margin-bottom: 12px;
+        border: none;
+        border-radius: 6px;
+        outline: none;
+    }
+
+    input:focus {
+        box-shadow: 0 0 5px #00e6ff;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 25px;
+        background: linear-gradient(135deg, #00e6ff, #0077ff);
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 230, 255, 0.6);
+    }
+
+    #result {
+        margin-top: 15px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>❤️ Heart Disease Prediction</h2>
+
+    <form id="predictForm">
+        <label>Age</label>
+        <input type="number" name="age" required>
+
+        <label>Sex (0 = Female, 1 = Male)</label>
+        <input type="number" name="sex" required>
+
+        <label>Chest Pain Type (0–3)</label>
+        <input type="number" name="cp" required>
+
+        <label>Resting BP</label>
+        <input type="number" name="trestbps" required>
+
+        <label>Cholesterol</label>
+        <input type="number" name="chol" required>
+
+        <label>Fasting BS (0/1)</label>
+        <input type="number" name="fbs" required>
+
+        <label>Resting ECG (0–2)</label>
+        <input type="number" name="restecg" required>
+
+        <label>Max Heart Rate</label>
+        <input type="number" name="thalach" required>
+
+        <label>Exercise Angina (0/1)</label>
+        <input type="number" name="exang" required>
+
+        <label>Oldpeak</label>
+        <input type="number" step="any" name="oldpeak" required>
+
+        <label>Slope (0–2)</label>
+        <input type="number" name="slope" required>
+
+        <label>CA (0–4)</label>
+        <input type="number" name="ca" required>
+
+        <label>Thal (1=Fixed, 2=Normal, 3=Reversible)</label>
+        <input type="number" name="thal" required>
+
+        <button type="submit">🔍 Predict Now</button>
+    </form>
+
+    <div id="result"></div>
+</div>
+
+<script>
+document.getElementById("predictForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const jsonData = {};
+
+    formData.forEach((value, key) => {
+        jsonData[key] = Number(value);
+    });
+
+    const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jsonData)
+    });
+
+    const result = await response.json();
+
+    document.getElementById("result").innerText =
+        result.prediction === 1
+        ? "⚠️ High Risk of Heart Disease"
+        : "✅ Low Risk of Heart Disease";
+});
+</script>
+
+</body>
+</html>
